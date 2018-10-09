@@ -4,9 +4,7 @@ int degree = 3; //degree of polynomial regression
 polyFit myFit = new polyFit();
 
 void setup() {
-  size(1000, 360);
-  smooth();
-  noStroke();
+  size(500,500);
 }
 
 void draw() {
@@ -21,9 +19,29 @@ void draw() {
   for(int i = 0; i <= degree; ++i){
     text((float)coeff[i],10,(i+1)*30);
   }
+  
+  
 }
 
 class polyFit{
+  
+    
+  double[] getCoeff(){
+    return _finalCoeff;
+  }
+
+  void run(int[] x, int[] y, int size, int degree){
+     _size = size;
+     _degree = degree;
+     _xVals = x;
+     _yVals = y;
+     buildXSigmaVals();
+     buildYSigmaVals();
+     buildAugmentedMatrix();
+     pivotization();
+     gaussElim();
+     backSub();
+  }
   
   private int _size;
   private int _degree = degree;
@@ -43,18 +61,6 @@ class polyFit{
         xSigmaVals[i] = xSigmaVals[i] + pow(_xVals[j],i);
       }
     }
-  }
-  
-  void setX(){
-    for(int i = 0; i < _size; ++i){
-      _xVals[i] = i+1;
-    }
-    _yVals[0] = 100;
-    _yVals[1] = 200;
-    _yVals[2] = 500;
-    _yVals[3] = 1200;
-    _yVals[4] = 3500;
-    
   }
   
   //consecutive positions will store sigma(yi),sigma(xi*yi),sigma(xi^2*yi)...sigma(xi^n*yi)
@@ -126,23 +132,7 @@ class polyFit{
     _augmentedMatrix[lhsX][lhsY] = _augmentedMatrix[rhsX][rhsY];
     _augmentedMatrix[rhsX][rhsY] = temp;
   }
-  
-  double[] getCoeff(){
-    return _finalCoeff;
-  }
-  
-  void run(int[] x, int[] y, int size, int degree){
-     _size = size;
-     _degree = degree;
-     _xVals = x;
-     _yVals = y;
-     buildXSigmaVals();
-     buildYSigmaVals();
-     buildAugmentedMatrix();
-     pivotization();
-     gaussElim();
-     backSub();
-  }
+
   
   
 }
